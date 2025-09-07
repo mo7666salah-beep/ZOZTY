@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة التحديات الرومانسية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 30%, #fecfef 70%, #ff9a9e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 1.5rem;
+            color: #ff69b4;
+            animation: floatHeart 8s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            border: 3px solid #ff69b4;
+        }
+
+        .game-title {
+            color: #d63384;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { 
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.1), 0 0 10px #ff69b4; 
+            }
+            to { 
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.1), 0 0 20px #ff1493, 0 0 30px #ff1493; 
+            }
+        }
+
+        .game-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .challenge-card {
+            background: linear-gradient(145deg, #fff, #f8f9fa);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ff69b4;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 105, 180, 0.1), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        }
+
+        .challenge-text {
+            font-size: 1.4rem;
+            color: #333;
+            font-weight: bold;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .challenge-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .btn {
+            background: linear-gradient(145deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(145deg, #6c757d, #495057);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(145deg, #28a745, #20c997);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .score-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            background: rgba(255, 182, 193, 0.2);
+            padding: 1rem;
+            border-radius: 15px;
+            border: 2px solid #ffb6c1;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-value {
+            color: #d63384;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            color: #ff1493;
+            font-weight: bold;
+            margin: 1rem 0;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff69b4;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .instructions {
+            background: rgba(255, 240, 245, 0.8);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 2px solid #ffb6c1;
+        }
+
+        .instructions h3 {
+            color: #d63384;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .instructions ul {
+            text-align: right;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .mini-game-section {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1rem;
+            background: rgba(255, 182, 193, 0.1);
+            border-radius: 15px;
+            border: 2px dashed #ff69b4;
+        }
+
+        .heart-game-btn {
+            background: linear-gradient(145deg, #ff69b4, #ff1493);
+            border: none;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4);
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .heart-game-btn:hover {
+            transform: scale(1.2);
+            box-shadow: 0 12px 35px rgba(255, 20, 147, 0.6);
+        }
+
+        .heart-game-text {
+            color: #d63384;
+            font-weight: bold;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .mini-game-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border: 3px solid #ff69b4;
+            width: 95vw;
+            max-width: 450px;
+            max-height: 95vh;
+            overflow: auto;
+        }
+
+        .mini-game-header {
+            text-align: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .mini-game-header h3 {
+            color: #d63384;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mini-game-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .close-game-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .close-game-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 182, 193, 0.2);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .game-stats span {
+            color: #666;
+        }
+
+        .game-stats strong {
+            color: #d63384;
+        }
+
+        .game-canvas-container {
+            text-align: center;
+        }
+
+        #gameCanvas {
+            border: 3px solid #ff69b4;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f8bbd9 100%);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            height: 250px;
+        }
+
+        .game-controls {
+            margin-top: 1rem;
+        }
+
+        .game-controls p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mobile-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 10px;
+            max-width: 200px;
+            margin: 1rem auto;
+            padding: 1rem;
+            background: rgba(255, 182, 193, 0.2);
+            border-radius: 15px;
+        }
+
+        .control-btn {
+            background: linear-gradient(145deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(255, 20, 147, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .control-btn:hover, .control-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 20, 147, 0.4);
+        }
+
+        .control-btn.empty {
+            background: transparent;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .control-btn.empty:hover, .control-btn.empty:active {
+            transform: none;
+        }
+
+        .restart-btn {
+            background: linear-gradient(145deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .challenge-text {
+                font-size: 1.2rem;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+
+            .mini-game-container {
+                padding: 1rem;
+            }
+
+            #gameCanvas {
+                width: 100%;
+                max-width: 400px;
+                height: auto;
+            }
+
+            .heart-game-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="floatingHearts"></div>
+    
+    <div class="game-container">
+        <h1 class="game-title">💕 التحديات الرومانسية 💕</h1>
+        <p class="game-subtitle">
+            لعبة مليئة بالحب والمرح! اختاروا التحديات وانفذوها معاً 💖
+        </p>
+
+        <div class="score-container">
+            <div class="score-item">
+                <div class="score-label">تحديات منفذة</div>
+                <div class="score-value" id="completedChallenges">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">النقاط</div>
+                <div class="score-value" id="totalPoints">0</div>
+            </div>
+        </div>
+
+        <div class="challenge-card" id="challengeCard">
+            <div class="challenge-icon">🎯</div>
+            <div class="challenge-text" id="challengeText">
+                اضغط على "اختر تحدي جديد" لبدء المتعة الرومانسية! 💖
+            </div>
+        </div>
+
+        <div class="timer hidden" id="timer"></div>
+
+        <div class="buttons-container">
+            <button class="btn" onclick="getNewChallenge()">
+                🎲 اختر تحدي جديد
+            </button>
+            <button class="btn btn-success hidden" id="completeBtn" onclick="completeChallenge()">
+                ✅ تم التنفيذ
+            </button>
+            <button class="btn btn-secondary hidden" id="skipBtn" onclick="skipChallenge()">
+                ⏭️ تخطي (عقوبة!)
+            </button>
+        </div>
+
+        <div class="mini-game-section">
+            <button class="heart-game-btn" onclick="toggleMiniGame()">
+                💖
+            </button>
+            <p class="heart-game-text">اضغط على القلب للعبة رومانسية!</p>
+        </div>
+
+        <div class="mini-game-container hidden" id="miniGameContainer">
+            <div class="mini-game-header">
+                <h3>🏃‍♂️💕 مغامرة الحب الكبرى 💕🏃‍♀️</h3>
+                <p>استخدم الأسهم أو WASD للجري وراء حبيبتك!</p>
+                <div class="game-stats">
+                    <span>المستوى: <strong id="gameLevel">1</strong></span>
+                    <span>النقاط: <strong id="gameScore">0</strong></span>
+                    <span>الوقت: <strong id="gameTime">30</strong></span>
+                    <span>الأحضان: <strong id="hugCount">0</strong></span>
+                </div>
+                <button class="close-game-btn" onclick="toggleMiniGame()">✖️</button>
+            </div>
+            <div class="game-canvas-container">
+                <canvas id="gameCanvas" width="400" height="250"></canvas>
+                <div class="mobile-controls">
+                    <div class="control-btn empty"></div>
+                    <button class="control-btn" onmousedown="startMove('up')" onmouseup="stopMove('up')" ontouchstart="startMove('up')" ontouchend="stopMove('up')">↑</button>
+                    <div class="control-btn empty"></div>
+                    <button class="control-btn" onmousedown="startMove('left')" onmouseup="stopMove('left')" ontouchstart="startMove('left')" ontouchend="stopMove('left')">←</button>
+                    <div class="control-btn empty"></div>
+                    <button class="control-btn" onmousedown="startMove('right')" onmouseup="stopMove('right')" ontouchstart="startMove('right')" ontouchend="stopMove('right')">→</button>
+                    <div class="control-btn empty"></div>
+                    <button class="control-btn" onmousedown="startMove('down')" onmouseup="stopMove('down')" ontouchstart="startMove('down')" ontouchend="stopMove('down')">↓</button>
+                    <div class="control-btn empty"></div>
+                </div>
+                <div class="game-controls">
+                    <p>استخدم الأزرار أعلاه أو لوحة المفاتيح للحركة</p>
+                    <button class="restart-btn" onclick="restartGame()">🔄 إعادة البدء</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>📋 قواعد اللعبة:</h3>
+            <ul>
+                <li>🎯 اختاروا تحدي عشوائي واقرأوه بصوت عالي</li>
+                <li>💖 نفذوا التحدي معاً بحب ومرح</li>
+                <li>⏰ بعض التحديات لها وقت محدد</li>
+                <li>✅ اضغطوا "تم التنفيذ" بعد إنهاء التحدي</li>
+                <li>⏭️ إذا رفضتم التنفيذ، ستحصلون على عقوبة رومانسية!</li>
+                <li>🏆 اجمعوا أكبر عدد من النقاط</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="celebration hidden" id="celebration"></div>
+
+    <script>
+        const challenges = [
+            { text: "قوللي جملة غزل مبتكرة عمرك ما قلتها قبل كده 💕", icon: "💝", points: 15 },
+            { text: "غنيلي مقطع من أغنية رومانسية وأنا أغمض عيني 🎵", icon: "🎤", points: 20 },
+            { text: "اكتبلي دلوقتي رسالة حب في دقيقة واحدة بس ✍️", icon: "💌", points: 25, timer: 60 },
+            { text: "قوللي 3 أسباب بتحبني عشانهم من غير ما تفكر كتير 💖", icon: "💭", points: 20 },
+            { text: "بصلي في عيني لمدة 30 ثانية من غير ما تضحك 👀", icon: "👁️", points: 15, timer: 30 },
+            { text: "اعمليلي حضن جامد 10 ثواني 🤗", icon: "🫂", points: 15, timer: 10 },
+            { text: "قلّد أول مرة شفتني فيها وعبرتلي عن إعجابك 😍", icon: "🎭", points: 25 },
+            { text: "ارسملي بسرعة رسمة بتعبر عني 🎨", icon: "✏️", points: 20, timer: 120 },
+            { text: "احكيلي موقف حسيت فيه إني كنت سند ليك 💪", icon: "🤝", points: 25 },
+            { text: "قول كلمة 'بحبك' بـ3 طرق مختلفة (ممكن بالهمس – بالضحك – بالجد) ❤️", icon: "💕", points: 20 },
+            { text: "اعترفلي بسر صغير عمرك ما قولته 🤫", icon: "🔐", points: 30 },
+            { text: "ابعتلي فويس دلوقتي بكلمة غريبة وأنا أخمن معناها 🎙️", icon: "🔊", points: 15 },
+            { text: "قوللي لو كان عندك 24 ساعة بس معايا هتعمل إيه ⏰", icon: "🌅", points: 25 },
+            { text: "اعمليلي حركة إيد رومانسية (زي مسكة إيد أو لمسة لطيفة) 👐", icon: "💖", points: 15 },
+            { text: "اعمللي وعد صغير دلوقتي ونفذه خلال أسبوع 🤞", icon: "💍", points: 30 },
+            { text: "احكيلي أكتر حاجة خلتك تفتكرني النهاردة 💭", icon: "🌸", points: 20 },
+            { text: "اعمللي نداء دلع جديد واخترعلي اسم خاص بيا 👑", icon: "💖", points: 15 },
+            { text: "قوللي إيه أول حاجة لفتت نظرك فيا يوم ما اتعرفنا ✨", icon: "👀", points: 25 },
+            { text: "صفني في 5 كلمات بس 📝", icon: "✍️", points: 15, timer: 30 },
+            { text: "ابعتلي صورة من عندك مرتبطة بيا 📸", icon: "📷", points: 20 },
+            { text: "اكتبلي دلوقتي شعر قصير (حتى لو كلمتين مضحكين) 📜", icon: "🎭", points: 25, timer: 90 },
+            { text: "اعمللي مفاجأة دلوقتي من غير ما تقول إيه هي 🎁", icon: "✨", points: 30 },
+            { text: "احكيلي موقف محرج حصلك معايا 😅", icon: "🤭", points: 20 },
+            { text: "قول جملة رومانسية وأنت مغمض عينك 💕", icon: "👁️", points: 15, timer: 20 },
+            { text: "اعمل تمثيلية صغيرة كإني زعلت منك وإنت بتحاول تصالحني 🎭", icon: "😢", points: 30 },
+            { text: "قول كلمة 'وحشتني' 5 مرات وكل مرة بطريقة مختلفة 💔", icon: "😢", points: 20 },
+            { text: "اعمل رنة موبايل مخصوصة مرتبطة بيا 🎵", icon: "📱", points: 25 },
+            { text: "اعترف بحاجة صغيرة بتحبها فيا بس عمرك ما قلتها 🤫", icon: "💝", points: 25 },
+            { text: "اعمللي خطة خيالية لرحلة هانروحها مع بعض ✈️", icon: "🌍", points: 30 },
+            { text: "قوللي كلمة سر بيني وبينك محدش يعرفها 🔐", icon: "🤐", points: 25 },
+            { text: "ارسم قلب على إيدك وبعتهالي صورة ❤️", icon: "✋", points: 20 },
+            { text: "اعمل حركة رومانسية بالوش (نظرة – ابتسامة – بوسة هوا 😂) 😘", icon: "😍", points: 15 },
+            { text: "احكيلي عن أول مرة قولتلي 'بحبك' 💖", icon: "💕", points: 30 },
+            { text: "قوللي كلمة حب بلهجة غريبة أو لغة تانية لو تعرف 🌍", icon: "🗣️", points: 15 },
+            { text: "اعمللي أغنية صغيرة دلوقتي بكلام من عندك 🎤", icon: "🎵", points: 30, timer: 120 },
+            { text: "قول 3 حاجات نفسك نعملها سوا في أقرب وقت 📝", icon: "💭", points: 20 },
+            { text: "مثللي مشهد من فيلم رومانسي يعجبك 🎬", icon: "🎭", points: 25 },
+            { text: "ابعتلي قلوب كتير وكل قلب بمعنى مختلف 💖", icon: "💕", points: 15 },
+            { text: "اعمليلي قصة قصيرة عني وعنك كأننا أبطال فيلم 📖", icon: "👫", points: 35, timer: 180 },
+            { text: "قوللي إيه الحاجة اللي من غيرها ما تقدرش تعيش معايا 💫", icon: "🌟", points: 30 },
+            { text: "قوللي أحلى ذكرى جمعتنا مع بعض 📸", icon: "💭", points: 20 },
+            { text: "اعمل شكل قلب بإيديك وقوللي كلمة حب 💖", icon: "👐", points: 10 },
+            { text: "قوللي إيش اللي يميزني عن كل الناس في نظرك 🌟", icon: "⭐", points: 25 },
+            { text: "اعطيني قبلة على الجبين وقوللي كلمة حلوة 😇", icon: "😘", points: 15 },
+            { text: "قوللي أغنية تفتكرك فيا لما تسمعها 🎵", icon: "🎶", points: 15 },
+            { text: "اعمللي مساج بسيط للكتف لمدة دقيقة 💆", icon: "🧘", points: 20, timer: 60 },
+            { text: "قوللي حلم نفسك نحققه مع بعض 💭", icon: "🌙", points: 25 },
+            { text: "اعطيني لقب حلو ومميز من دلوقتي 👑", icon: "🏷️", points: 15 },
+            { text: "قوللي كومبليمنت على شكلي النهاردة 💅", icon: "💄", points: 10 },
+            { text: "اعمل دعاء حلو ليا 🤲", icon: "🕊️", points: 25 },
+            { text: "قوللي إيش اللي يخليك فخور فيا 🏆", icon: "🥇", points: 20 },
+            { text: "اعطيني عناق من الخلف لمدة 5 ثواني 🫂", icon: "🤗", points: 15, timer: 5 },
+            { text: "قوللي كلمة تشجيع وحب 💪", icon: "💝", points: 15 },
+            { text: "اعمللي مفاجأة صغيرة دلوقتي (حتى لو بسيطة) 🎁", icon: "✨", points: 25 },
+            { text: "قوللي إيش اللي يخليك محظوظ إنك معايا 🍀", icon: "🌈", points: 20 }
+        ];
+
+        let currentChallenge = null;
+        let completedCount = 0;
+        let totalPoints = 0;
+        let timerInterval = null;
+
+        function createFloatingHearts() {
+            const container = document.getElementById('floatingHearts');
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = ['💖', '💕', '💗', '💝', '💘', '💞'][Math.floor(Math.random() * 6)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            
+            container.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 8000);
+        }
+
+        function getNewChallenge() {
+            currentChallenge = challenges[Math.floor(Math.random() * challenges.length)];
+            
+            document.getElementById('challengeText').textContent = currentChallenge.text;
+            document.querySelector('.challenge-icon').textContent = currentChallenge.icon;
+            
+            document.getElementById('completeBtn').classList.remove('hidden');
+            document.getElementById('skipBtn').classList.remove('hidden');
+            
+            if (currentChallenge.timer) {
+                startTimer(currentChallenge.timer);
+            } else {
+                document.getElementById('timer').classList.add('hidden');
+            }
+            
+            // تأثير بصري
+            const card = document.getElementById('challengeCard');
+            card.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                card.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function startTimer(seconds) {
+            const timerElement = document.getElementById('timer');
+            timerElement.classList.remove('hidden');
+            
+            let timeLeft = seconds;
+            timerElement.textContent = `⏰ الوقت المتبقي: ${timeLeft} ثانية`;
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = `⏰ الوقت المتبقي: ${timeLeft} ثانية`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = "⏰ انتهى الوقت!";
+                    timerElement.style.color = '#dc3545';
+                }
+            }, 1000);
+        }
+
+        function completeChallenge() {
+            if (!currentChallenge) return;
+            
+            completedCount++;
+            totalPoints += currentChallenge.points;
+            
+            document.getElementById('completedChallenges').textContent = completedCount;
+            document.getElementById('totalPoints').textContent = totalPoints;
+            
+            // إخفاء الأزرار والتايمر
+            document.getElementById('completeBtn').classList.add('hidden');
+            document.getElementById('skipBtn').classList.add('hidden');
+            document.getElementById('timer').classList.add('hidden');
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            // تأثير الاحتفال
+            createCelebration();
+            
+            // رسالة تشجيعية
+            document.getElementById('challengeText').innerHTML = `
+                🎉 أحسنتم! حصلتم على ${currentChallenge.points} نقطة! 🎉<br>
+                <small style="color: #666;">اختاروا تحدي جديد للمتابعة</small>
+            `;
+            document.querySelector('.challenge-icon').textContent = '🏆';
+            
+            currentChallenge = null;
+        }
+
+        function skipChallenge() {
+            if (!currentChallenge) return;
+            
+            // إخفاء الأزرار والتايمر
+            document.getElementById('completeBtn').classList.add('hidden');
+            document.getElementById('skipBtn').classList.add('hidden');
+            document.getElementById('timer').classList.add('hidden');
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            // عقوبات رومانسية عشوائية
+            const punishments = [
+                "اكتب رسالة حب من 5 أسطر لحبيبك/حبيبتك ✍️💕",
+                "اعمل مفاجأة صغيرة في خلال اليوم 🎁💖",
+                "قول 10 كومبليمنتات متتالية 💝✨",
+                "اعطي 20 قبلة على الخد 😘💋",
+                "اعمل إفطار أو عشاء رومانسي 🍽️💕",
+                "اكتب قصيدة بسيطة (حتى لو 4 أبيات) 📝🌹",
+                "اعطي مساج لمدة 10 دقائق 💆‍♀️💖",
+                "اعمل فيديو قصير تقول فيه كلام حب 📱💕"
+            ];
+            
+            const punishment = punishments[Math.floor(Math.random() * punishments.length)];
+            
+            document.getElementById('challengeText').innerHTML = `
+                😅 عقوبة رومانسية! 💕<br>
+                <strong>${punishment}</strong><br>
+                <small style="color: #666;">نفذ العقوبة واختر تحدي جديد</small>
+            `;
+            document.querySelector('.challenge-icon').textContent = '😈';
+            
+            currentChallenge = null;
+        }
+
+        function createCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.classList.remove('hidden');
+            
+            // إنشاء كونفيتي
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = ['#ff69b4', '#ff1493', '#ffd700', '#ff6347', '#9370db'][Math.floor(Math.random() * 5)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    
+                    celebration.appendChild(confetti);
+                    
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+            
+            setTimeout(() => {
+                celebration.classList.add('hidden');
+            }, 3000);
+        }
+
+        // إنشاء قلوب متحركة كل ثانيتين
+        setInterval(createFloatingHearts, 2000);
+        
+        // إنشاء قلوب أولية
+        for (let i = 0; i < 5; i++) {
+            setTimeout(createFloatingHearts, i * 400);
+        }
+
+        // متغيرات اللعبة المصغرة المطورة
+        let canvas, ctx;
+        let gameRunning = false;
+        let player = { x: 50, y: 125, size: 40, speed: 4, trail: [] };
+        let beloved = { x: 300, y: 125, size: 40, speed: 2.5, trail: [] };
+        let keys = {};
+        let gameState = 'playing'; // 'playing', 'caught', 'hugging', 'levelComplete'
+        let hugTimer = 0;
+        let hearts = [];
+        let particles = [];
+        let obstacles = [];
+        let powerUps = [];
+        let mobileControls = { up: false, down: false, left: false, right: false };
+        let gameLevel = 1;
+        let gameScore = 0;
+        let hugCount = 0;
+        let timeLeft = 30;
+        let gameTimer = null;
+        let backgroundStars = [];
+        let cameraShake = 0;
+
+        function toggleMiniGame() {
+            const container = document.getElementById('miniGameContainer');
+            const isHidden = container.classList.contains('hidden');
+            
+            if (isHidden) {
+                container.classList.remove('hidden');
+                initMiniGame();
+            } else {
+                container.classList.add('hidden');
+                gameRunning = false;
+            }
+        }
+
+        function initMiniGame() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            gameRunning = true;
+            gameState = 'playing';
+            
+            // إعادة تعيين جميع المتغيرات
+            player = { x: 50, y: 125, size: 40, speed: 4, trail: [] };
+            beloved = { x: 300, y: 125, size: 40, speed: 2.5, trail: [] };
+            hearts = [];
+            particles = [];
+            obstacles = [];
+            powerUps = [];
+            backgroundStars = [];
+            hugTimer = 0;
+            gameLevel = 1;
+            gameScore = 0;
+            hugCount = 0;
+            timeLeft = 30;
+            cameraShake = 0;
+            mobileControls = { up: false, down: false, left: false, right: false };
+            
+            // إنشاء النجوم في الخلفية
+            createBackgroundStars();
+            
+            // إنشاء المستوى الأول
+            createLevel(gameLevel);
+            
+            // بدء المؤقت
+            startGameTimer();
+            
+            // تحديث واجهة المستخدم
+            updateGameUI();
+            
+            // بدء حلقة اللعبة
+            gameLoop();
+            
+            // إضافة مستمعي الأحداث
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+        }
+
+        function startMove(direction) {
+            mobileControls[direction] = true;
+        }
+
+        function stopMove(direction) {
+            mobileControls[direction] = false;
+        }
+
+        function handleKeyDown(e) {
+            keys[e.key.toLowerCase()] = true;
+            keys[e.code] = true;
+        }
+
+        function handleKeyUp(e) {
+            keys[e.key.toLowerCase()] = false;
+            keys[e.code] = false;
+        }
+
+        function updateGame() {
+            if (gameState === 'hugging') {
+                hugTimer++;
+                if (hugTimer > 120) { // 2 ثانية
+                    gameState = 'playing';
+                    hugTimer = 0;
+                    hugCount++;
+                    gameScore += 100 * gameLevel;
+                    
+                    // إضافة تأثير الكاميرا
+                    cameraShake = 10;
+                    
+                    // إنشاء جزيئات الاحتفال
+                    createCelebrationParticles();
+                    
+                    // إعادة وضع الحبيبة في مكان عشوائي
+                    beloved.x = Math.random() * (canvas.width - beloved.size);
+                    beloved.y = Math.random() * (canvas.height - beloved.size);
+                    
+                    // فحص إكمال المستوى
+                    if (hugCount >= gameLevel * 3) {
+                        levelComplete();
+                    }
+                    
+                    updateGameUI();
+                }
+                return;
+            }
+
+            if (gameState === 'levelComplete') {
+                return;
+            }
+
+            // تحديث أثر الحركة
+            updateTrails();
+
+            // حركة اللاعب (لوحة المفاتيح + اللمس)
+            let moved = false;
+            if (keys['arrowleft'] || keys['a'] || mobileControls.left) {
+                player.x = Math.max(0, player.x - player.speed);
+                moved = true;
+            }
+            if (keys['arrowright'] || keys['d'] || mobileControls.right) {
+                player.x = Math.min(canvas.width - player.size, player.x + player.speed);
+                moved = true;
+            }
+            if (keys['arrowup'] || keys['w'] || mobileControls.up) {
+                player.y = Math.max(0, player.y - player.speed);
+                moved = true;
+            }
+            if (keys['arrowdown'] || keys['s'] || mobileControls.down) {
+                player.y = Math.min(canvas.height - player.size, player.y + player.speed);
+                moved = true;
+            }
+
+            // فحص الاصطدام مع العوائق
+            checkObstacleCollision();
+
+            // فحص الاصطدام مع القوى الخاصة
+            checkPowerUpCollision();
+
+            // حركة الحبيبة المتقدمة
+            if (gameState === 'playing') {
+                updateBelovedAI();
+
+                // فحص الاصطدام للاحتضان
+                const dx = player.x - beloved.x;
+                const dy = player.y - beloved.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 30) {
+                    gameState = 'hugging';
+                    hugTimer = 0;
+                    createGameHearts();
+                }
+            }
+
+            // تحديث الجزيئات والتأثيرات
+            updateParticles();
+            updateHearts();
+            
+            // تحديث اهتزاز الكاميرا
+            if (cameraShake > 0) {
+                cameraShake--;
+            }
+        }
+
+        function createGameHearts() {
+            for (let i = 0; i < 15; i++) {
+                hearts.push({
+                    x: player.x + Math.random() * 60 - 30,
+                    y: player.y + Math.random() * 60 - 30,
+                    speed: Math.random() * 3 + 1,
+                    opacity: 1,
+                    size: Math.random() * 20 + 15,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+        }
+
+        function createBackgroundStars() {
+            for (let i = 0; i < 30; i++) {
+                backgroundStars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    opacity: Math.random() * 0.5 + 0.3,
+                    twinkle: Math.random() * 100
+                });
+            }
+        }
+
+        function createLevel(level) {
+            obstacles = [];
+            powerUps = [];
+            
+            // إنشاء العوائق حسب المستوى
+            const obstacleCount = Math.min(level * 2, 8);
+            for (let i = 0; i < obstacleCount; i++) {
+                obstacles.push({
+                    x: Math.random() * (canvas.width - 40) + 20,
+                    y: Math.random() * (canvas.height - 40) + 20,
+                    width: 30 + Math.random() * 20,
+                    height: 30 + Math.random() * 20,
+                    type: Math.random() > 0.5 ? 'rock' : 'flower'
+                });
+            }
+            
+            // إنشاء القوى الخاصة
+            const powerUpCount = Math.max(1, Math.floor(level / 2));
+            for (let i = 0; i < powerUpCount; i++) {
+                powerUps.push({
+                    x: Math.random() * (canvas.width - 30) + 15,
+                    y: Math.random() * (canvas.height - 30) + 15,
+                    size: 25,
+                    type: ['speed', 'magnet', 'time'][Math.floor(Math.random() * 3)],
+                    collected: false,
+                    pulse: 0
+                });
+            }
+            
+            // زيادة سرعة الحبيبة
+            beloved.speed = 2.5 + (level - 1) * 0.3;
+        }
+
+        function startGameTimer() {
+            if (gameTimer) clearInterval(gameTimer);
+            
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                updateGameUI();
+                
+                if (timeLeft <= 0) {
+                    gameOver();
+                }
+            }, 1000);
+        }
+
+        function updateGameUI() {
+            document.getElementById('gameLevel').textContent = gameLevel;
+            document.getElementById('gameScore').textContent = gameScore;
+            document.getElementById('gameTime').textContent = timeLeft;
+            document.getElementById('hugCount').textContent = hugCount;
+        }
+
+        function levelComplete() {
+            gameState = 'levelComplete';
+            gameLevel++;
+            timeLeft += 20; // وقت إضافي
+            hugCount = 0;
+            
+            // إنشاء المستوى الجديد
+            createLevel(gameLevel);
+            
+            // تأثير الاحتفال
+            createLevelCompleteEffect();
+            
+            setTimeout(() => {
+                gameState = 'playing';
+            }, 2000);
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            if (gameTimer) clearInterval(gameTimer);
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('انتهت اللعبة! 💔', canvas.width/2, canvas.height/2 - 20);
+            
+            ctx.font = '16px Arial';
+            ctx.fillText(`النقاط النهائية: ${gameScore}`, canvas.width/2, canvas.height/2 + 20);
+        }
+
+        function updateTrails() {
+            // أثر حركة اللاعب
+            player.trail.push({ x: player.x + player.size/2, y: player.y + player.size/2, opacity: 1 });
+            if (player.trail.length > 10) player.trail.shift();
+            
+            player.trail.forEach(point => {
+                point.opacity -= 0.1;
+            });
+            
+            // أثر حركة الحبيبة
+            beloved.trail.push({ x: beloved.x + beloved.size/2, y: beloved.y + beloved.size/2, opacity: 1 });
+            if (beloved.trail.length > 8) beloved.trail.shift();
+            
+            beloved.trail.forEach(point => {
+                point.opacity -= 0.12;
+            });
+        }
+
+        function updateBelovedAI() {
+            const dx = player.x - beloved.x;
+            const dy = player.y - beloved.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 100) {
+                // الهروب الذكي - تجنب العوائق
+                let escapeX = (dx / distance) * -beloved.speed;
+                let escapeY = (dy / distance) * -beloved.speed;
+                
+                // فحص العوائق في مسار الهروب
+                const futureX = beloved.x + escapeX * 5;
+                const futureY = beloved.y + escapeY * 5;
+                
+                let blocked = false;
+                obstacles.forEach(obstacle => {
+                    if (futureX < obstacle.x + obstacle.width && 
+                        futureX + beloved.size > obstacle.x &&
+                        futureY < obstacle.y + obstacle.height && 
+                        futureY + beloved.size > obstacle.y) {
+                        blocked = true;
+                    }
+                });
+                
+                if (blocked) {
+                    // تغيير الاتجاه إذا كان مسدود
+                    escapeX = escapeY;
+                    escapeY = -escapeX;
+                }
+                
+                beloved.x = Math.max(0, Math.min(canvas.width - beloved.size, beloved.x + escapeX));
+                beloved.y = Math.max(0, Math.min(canvas.height - beloved.size, beloved.y + escapeY));
+            } else {
+                // حركة عشوائية أكثر ذكاءً
+                beloved.x += (Math.random() - 0.5) * 3;
+                beloved.y += (Math.random() - 0.5) * 3;
+                beloved.x = Math.max(0, Math.min(canvas.width - beloved.size, beloved.x));
+                beloved.y = Math.max(0, Math.min(canvas.height - beloved.size, beloved.y));
+            }
+        }
+
+        function checkObstacleCollision() {
+            obstacles.forEach(obstacle => {
+                if (player.x < obstacle.x + obstacle.width && 
+                    player.x + player.size > obstacle.x &&
+                    player.y < obstacle.y + obstacle.height && 
+                    player.y + player.size > obstacle.y) {
+                    
+                    // إرجاع اللاعب للخلف
+                    if (keys['arrowleft'] || keys['a'] || mobileControls.left) {
+                        player.x += player.speed;
+                    }
+                    if (keys['arrowright'] || keys['d'] || mobileControls.right) {
+                        player.x -= player.speed;
+                    }
+                    if (keys['arrowup'] || keys['w'] || mobileControls.up) {
+                        player.y += player.speed;
+                    }
+                    if (keys['arrowdown'] || keys['s'] || mobileControls.down) {
+                        player.y -= player.speed;
+                    }
+                }
+            });
+        }
+
+        function checkPowerUpCollision() {
+            powerUps.forEach(powerUp => {
+                if (!powerUp.collected) {
+                    const dx = player.x + player.size/2 - (powerUp.x + powerUp.size/2);
+                    const dy = player.y + player.size/2 - (powerUp.y + powerUp.size/2);
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 25) {
+                        powerUp.collected = true;
+                        gameScore += 50;
+                        
+                        switch (powerUp.type) {
+                            case 'speed':
+                                player.speed = Math.min(8, player.speed + 1);
+                                break;
+                            case 'magnet':
+                                // جذب الحبيبة قليلاً
+                                beloved.speed = Math.max(1, beloved.speed - 0.5);
+                                break;
+                            case 'time':
+                                timeLeft += 10;
+                                break;
+                        }
+                        
+                        createPowerUpEffect(powerUp.x, powerUp.y);
+                        updateGameUI();
+                    }
+                }
+            });
+        }
+
+        function updateParticles() {
+            particles = particles.filter(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vy += 0.1; // جاذبية
+                particle.opacity -= 0.02;
+                particle.size *= 0.99;
+                
+                return particle.opacity > 0 && particle.size > 0.5;
+            });
+        }
+
+        function updateHearts() {
+            hearts = hearts.filter(heart => {
+                heart.y -= heart.speed;
+                heart.opacity -= 0.015;
+                heart.rotation += heart.rotationSpeed;
+                return heart.opacity > 0;
+            });
+        }
+
+        function createCelebrationParticles() {
+            for (let i = 0; i < 20; i++) {
+                particles.push({
+                    x: player.x + player.size/2,
+                    y: player.y + player.size/2,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8 - 2,
+                    size: Math.random() * 8 + 4,
+                    opacity: 1,
+                    color: ['#ff69b4', '#ff1493', '#ffd700', '#ff6347'][Math.floor(Math.random() * 4)]
+                });
+            }
+        }
+
+        function createPowerUpEffect(x, y) {
+            for (let i = 0; i < 10; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.5) * 6,
+                    size: Math.random() * 6 + 3,
+                    opacity: 1,
+                    color: '#00ff00'
+                });
+            }
+        }
+
+        function createLevelCompleteEffect() {
+            for (let i = 0; i < 50; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: canvas.height,
+                    vx: (Math.random() - 0.5) * 4,
+                    vy: -Math.random() * 8 - 2,
+                    size: Math.random() * 10 + 5,
+                    opacity: 1,
+                    color: ['#ff69b4', '#ff1493', '#ffd700'][Math.floor(Math.random() * 3)]
+                });
+            }
+        }
+
+        function drawCharacter(x, y, size, type, isHugging = false) {
+            const centerX = x + size/2;
+            const centerY = y + size/2;
+            
+            if (type === 'player') {
+                // رسم الشخص الذكر (أزرق)
+                // الجسم
+                ctx.fillStyle = '#4a90e2';
+                ctx.fillRect(x + size*0.2, y + size*0.4, size*0.6, size*0.5);
+                
+                // الرأس
+                ctx.fillStyle = '#fdbcb4';
+                ctx.beginPath();
+                ctx.arc(centerX, y + size*0.25, size*0.2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // الشعر
+                ctx.fillStyle = '#8b4513';
+                ctx.beginPath();
+                ctx.arc(centerX, y + size*0.2, size*0.22, Math.PI, Math.PI * 2);
+                ctx.fill();
+                
+                // العيون
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(centerX - size*0.08, y + size*0.22, size*0.03, 0, Math.PI * 2);
+                ctx.arc(centerX + size*0.08, y + size*0.22, size*0.03, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // الابتسامة
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(centerX, y + size*0.28, size*0.08, 0, Math.PI);
+                ctx.stroke();
+                
+                // الأرجل
+                ctx.fillStyle = '#000080';
+                ctx.fillRect(x + size*0.25, y + size*0.9, size*0.2, size*0.1);
+                ctx.fillRect(x + size*0.55, y + size*0.9, size*0.2, size*0.1);
+                
+            } else if (type === 'beloved') {
+                // رسم الفتاة (وردي)
+                // الجسم
+                ctx.fillStyle = isHugging ? '#ff1493' : '#ff69b4';
+                ctx.fillRect(x + size*0.2, y + size*0.4, size*0.6, size*0.5);
+                
+                // الرأس
+                ctx.fillStyle = '#fdbcb4';
+                ctx.beginPath();
+                ctx.arc(centerX, y + size*0.25, size*0.2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // الشعر الطويل
+                ctx.fillStyle = '#daa520';
+                ctx.beginPath();
+                ctx.arc(centerX, y + size*0.2, size*0.25, Math.PI, Math.PI * 2);
+                ctx.fill();
+                ctx.fillRect(x + size*0.1, y + size*0.25, size*0.8, size*0.15);
+                
+                // العيون (أكبر وأجمل)
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(centerX - size*0.08, y + size*0.22, size*0.04, 0, Math.PI * 2);
+                ctx.arc(centerX + size*0.08, y + size*0.22, size*0.04, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // الرموش
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                for(let i = 0; i < 3; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(centerX - size*0.08 + i*size*0.02 - size*0.02, y + size*0.18);
+                    ctx.lineTo(centerX - size*0.08 + i*size*0.02 - size*0.02, y + size*0.15);
+                    ctx.moveTo(centerX + size*0.08 + i*size*0.02 - size*0.02, y + size*0.18);
+                    ctx.lineTo(centerX + size*0.08 + i*size*0.02 - size*0.02, y + size*0.15);
+                    ctx.stroke();
+                }
+                
+                // الابتسامة
+                ctx.strokeStyle = '#ff1493';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(centerX, y + size*0.28, size*0.08, 0, Math.PI);
+                ctx.stroke();
+                
+                // الأرجل
+                ctx.fillStyle = '#ff1493';
+                ctx.fillRect(x + size*0.25, y + size*0.9, size*0.2, size*0.1);
+                ctx.fillRect(x + size*0.55, y + size*0.9, size*0.2, size*0.1);
+            }
+        }
+
+        function drawGame() {
+            // حفظ السياق للاهتزاز
+            ctx.save();
+            
+            // تطبيق اهتزاز الكاميرا
+            if (cameraShake > 0) {
+                const shakeX = (Math.random() - 0.5) * cameraShake;
+                const shakeY = (Math.random() - 0.5) * cameraShake;
+                ctx.translate(shakeX, shakeY);
+            }
+            
+            // مسح الشاشة
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // رسم الخلفية المتدرجة
+            const gradient = ctx.createRadialGradient(canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, canvas.width);
+            gradient.addColorStop(0, '#e3f2fd');
+            gradient.addColorStop(0.5, '#f8bbd9');
+            gradient.addColorStop(1, '#e1bee7');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // رسم النجوم المتلألئة
+            backgroundStars.forEach(star => {
+                star.twinkle += 0.1;
+                const twinkleOpacity = star.opacity + Math.sin(star.twinkle) * 0.3;
+                
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, twinkleOpacity);
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            // رسم العوائق
+            obstacles.forEach(obstacle => {
+                if (obstacle.type === 'rock') {
+                    // رسم صخرة
+                    ctx.fillStyle = '#8d6e63';
+                    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                    ctx.fillStyle = '#5d4037';
+                    ctx.fillRect(obstacle.x + 2, obstacle.y + 2, obstacle.width - 4, obstacle.height - 4);
+                } else {
+                    // رسم زهرة
+                    ctx.fillStyle = '#4caf50';
+                    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                    
+                    // بتلات الزهرة
+                    ctx.fillStyle = '#e91e63';
+                    const centerX = obstacle.x + obstacle.width/2;
+                    const centerY = obstacle.y + obstacle.height/2;
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (i * Math.PI * 2) / 6;
+                        const petalX = centerX + Math.cos(angle) * 8;
+                        const petalY = centerY + Math.sin(angle) * 8;
+                        ctx.beginPath();
+                        ctx.arc(petalX, petalY, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            });
+
+            // رسم القوى الخاصة
+            powerUps.forEach(powerUp => {
+                if (!powerUp.collected) {
+                    powerUp.pulse += 0.2;
+                    const pulseSize = powerUp.size + Math.sin(powerUp.pulse) * 5;
+                    
+                    ctx.save();
+                    ctx.globalAlpha = 0.8 + Math.sin(powerUp.pulse) * 0.2;
+                    
+                    // رسم الهالة
+                    ctx.fillStyle = powerUp.type === 'speed' ? '#00ff00' : 
+                                   powerUp.type === 'magnet' ? '#ff6600' : '#0066ff';
+                    ctx.beginPath();
+                    ctx.arc(powerUp.x + powerUp.size/2, powerUp.y + powerUp.size/2, pulseSize/2, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // رسم الرمز
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    const symbol = powerUp.type === 'speed' ? '⚡' : 
+                                  powerUp.type === 'magnet' ? '🧲' : '⏰';
+                    ctx.fillText(symbol, powerUp.x + powerUp.size/2, powerUp.y + powerUp.size/2 + 6);
+                    
+                    ctx.restore();
+                }
+            });
+
+            // رسم أثر الحركة
+            drawTrails();
+
+            // رسم اللاعب
+            drawCharacter(player.x, player.y, player.size, 'player');
+
+            // رسم الحبيبة
+            if (gameState === 'hugging') {
+                // رسم الاحتضان مع تأثير خاص
+                ctx.save();
+                ctx.shadowColor = '#ff69b4';
+                ctx.shadowBlur = 30;
+                drawCharacter(beloved.x, beloved.y, beloved.size, 'beloved', true);
+                ctx.restore();
+                
+                // رسالة الحب المتحركة
+                const loveMessages = [
+                    '💕 أحبك كثيراً! 💕',
+                    '💖 أنت حياتي! 💖',
+                    '💗 قلبي ينبض لك! 💗',
+                    '💝 أنت كل شيء! 💝'
+                ];
+                const messageIndex = Math.floor(hugTimer / 30) % loveMessages.length;
+                
+                ctx.save();
+                ctx.fillStyle = '#d63384';
+                ctx.font = 'bold 18px Arial';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = '#fff';
+                ctx.shadowBlur = 5;
+                ctx.fillText(loveMessages[messageIndex], canvas.width/2, 30);
+                ctx.restore();
+            } else if (gameState === 'levelComplete') {
+                // رسم رسالة إكمال المستوى
+                ctx.save();
+                ctx.fillStyle = '#ffd700';
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = '#000';
+                ctx.shadowBlur = 3;
+                ctx.fillText(`🎉 المستوى ${gameLevel - 1} مكتمل! 🎉`, canvas.width/2, canvas.height/2);
+                ctx.fillText(`استعد للمستوى ${gameLevel}!`, canvas.width/2, canvas.height/2 + 30);
+                ctx.restore();
+            } else {
+                drawCharacter(beloved.x, beloved.y, beloved.size, 'beloved');
+            }
+
+            // رسم الجزيئات
+            particles.forEach(particle => {
+                ctx.save();
+                ctx.globalAlpha = particle.opacity;
+                ctx.fillStyle = particle.color;
+                ctx.beginPath();
+                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+
+            // رسم القلوب المتطايرة
+            hearts.forEach(heart => {
+                ctx.save();
+                ctx.globalAlpha = heart.opacity;
+                ctx.translate(heart.x, heart.y);
+                ctx.rotate(heart.rotation * Math.PI / 180);
+                ctx.fillStyle = '#ff1493';
+                ctx.font = heart.size + 'px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('💖', 0, 0);
+                ctx.restore();
+            });
+
+            // رسم التعليمات والمعلومات
+            if (gameState === 'playing') {
+                ctx.fillStyle = '#666';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                
+                if (gameLevel === 1 && hugCount === 0) {
+                    ctx.fillText('اجري وراء حبيبتك لتحتضنها! 💕', canvas.width/2, canvas.height - 25);
+                    ctx.fillText('تجنب العوائق واجمع القوى الخاصة! ⚡', canvas.width/2, canvas.height - 10);
+                } else {
+                    ctx.fillText(`احتضن حبيبتك ${gameLevel * 3 - hugCount} مرات أخرى لإكمال المستوى!`, canvas.width/2, canvas.height - 10);
+                }
+            }
+
+            ctx.restore(); // استعادة السياق من الاهتزاز
+        }
+
+        function drawTrails() {
+            // رسم أثر اللاعب
+            player.trail.forEach((point, index) => {
+                if (point.opacity > 0) {
+                    ctx.save();
+                    ctx.globalAlpha = point.opacity * 0.6;
+                    ctx.fillStyle = '#4a90e2';
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, 3 + index * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            });
+
+            // رسم أثر الحبيبة
+            beloved.trail.forEach((point, index) => {
+                if (point.opacity > 0) {
+                    ctx.save();
+                    ctx.globalAlpha = point.opacity * 0.5;
+                    ctx.fillStyle = '#ff69b4';
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, 2 + index * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            });
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            updateGame();
+            drawGame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function restartGame() {
+            if (gameRunning) {
+                // إعادة تعيين جميع المتغيرات
+                player = { x: 50, y: 125, size: 40, speed: 4, trail: [] };
+                beloved = { x: 300, y: 125, size: 40, speed: 2.5, trail: [] };
+                hearts = [];
+                particles = [];
+                obstacles = [];
+                powerUps = [];
+                hugTimer = 0;
+                gameLevel = 1;
+                gameScore = 0;
+                hugCount = 0;
+                timeLeft = 30;
+                cameraShake = 0;
+                gameState = 'playing';
+                mobileControls = { up: false, down: false, left: false, right: false };
+                
+                // إعادة إنشاء المستوى
+                createLevel(gameLevel);
+                
+                // إعادة بدء المؤقت
+                startGameTimer();
+                
+                // تحديث واجهة المستخدم
+                updateGameUI();
+            }
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97b76535b7d783a9',t:'MTc1NzI2MDU3OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
